@@ -6,12 +6,12 @@
       <li>
         <router-link to="/" class="hover:underline">Home</router-link>
       </li>
-      <li>
+      <!-- <li>
         <router-link to="/posts" class="hover:underline">投稿閲覧</router-link>
       </li>
       <li>
         <router-link to="/create" class="hover:underline">投稿作成</router-link>
-      </li>
+      </li> -->
     </ul>
   </nav>
 
@@ -28,9 +28,11 @@
             {{ board.name }}-->
 
         <!--　動的に掲示板の名前を変更する-->
-        <div v-for="board in boards" :key="board.id" class="board-item" >
-          {{ board.name }}
+        <div v-for="disaster in disasters" :key="disaster.id" class="board-item" @click="navigateToPage(disaster)">
+          {{ disaster.disaster_name }}
+          <!-- {{disaster.id}} -->
         </div>
+
       </div>
     </div>
   </div>
@@ -46,31 +48,41 @@ import { storeToRefs } from 'pinia'
 import { useIpCityStore } from '../stores/ipCity'
 const {ip, city} = storeToRefs(useIpCityStore());
 
+import { useDisasterInfoStore } from '../stores/disasterInfo'
+const {disaster_id, disaster_name, allow_areas} = storeToRefs(useDisasterInfoStore());
+
 fetch('https://ipinfo.io/json')
   .then(response => response.json())
   .then(data => {
     ip.value = data.ip;
     // country.value = data.country;
-    // region.value = data.region;
-    city.value = data.city;
+    city.value = data.region; // Aichi是region，nagoya是city. 应该按照region来，但代码已经写了好多city了就将错就错
+    // city.value = data.city;
   })
   .catch(error => console.error('Error fetching location data:', error));
 
 const router = useRouter();
 
-// data相当の部分
-const boards = ref([
-  { id: 1, name: '能登半島地震掲示板' },
-  { id: 2, name: '熊本地震掲示板' },
-  { id: 3, name: '東日本大震災掲示板' },
-]);
+
+import axios from 'axios'
+const disasters = ref([]);
+axios.get('/api/disasters/')
+  .then(res => {
+    console.log(res.data)
+    disasters.value = res.data
+    console.log(disasters.value)
+  })
+  .catch((err) => {
+    console.log(err)
+  })
 
 
-// const navigateToPage = (boardId) => {
-//   if (boardId === 1) {
-//     router.push('/search');  // Vue Routerを使ってページ遷移
-//   }
-// };
+const navigateToPage = (disaster) => {
+  disaster_id.value = disaster.id;
+  disaster_name.value = disaster.disaster_name
+  allow_areas.value = disaster.allow_areas
+  router.push(`/search/${disaster.id}`);
+};
 </script>
 
 

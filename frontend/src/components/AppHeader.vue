@@ -48,6 +48,8 @@ const logout = async () => {
   axios.get('/api/logout/')
     .then(res => {
       isLoggedIn.value = false;
+      username.value = "none"
+      userid.value = -1
       console.log("Response Data:", res.data);
     })
   router.push('/loginregister');

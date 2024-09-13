@@ -4,6 +4,8 @@ import Home from "../pages/Home.vue";
 import LoginRegister from "../pages/LoginRegister.vue";
 import ShowIP from "../pages/ShowIP.vue";
 import Admin from "../pages/Admin.vue";
+import Search from "../pages/Search.vue";
+import PostForm from "../pages/PostForm.vue";
 // import Play from "../pages/Play.vue";
 
 const routes = [
@@ -26,6 +28,21 @@ const routes = [
     path: "/admin",
     name: "Admin",
     component: Admin,
+  },
+  // {
+  //   path: "/search",
+  //   name: "Search",
+  //   component: Search,
+  // },
+  {
+    path: "/search/:id",
+    name: "Search",
+    component: Search,
+  },
+  {
+    path: "/postform",
+    name: "PostForm",
+    component: PostForm,
   },
   // {
   //   path: "/play",
